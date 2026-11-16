@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ProjectFlow MVP</title>
+    <style>
+      :root {
+        --bg: #f7f9fc;
+        --card: #ffffff;
+        --primary: #3b82f6;
+        --primary-dark: #1d4ed8;
+        --secondary: #0f172a;
+        --text: #1f2937;
+        --muted: #6b7280;
+        --border: #e5e7eb;
+        --success: #10b981;
+        --shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+      }
+
+      * { box-sizing: border-box; }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%);
+        color: var(--text);
+      }
+
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+
+      .container {
+        width: min(1120px, calc(100% - 32px));
+        margin: 0 auto;
+      }
+
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        backdrop-filter: blur(10px);
+        background: rgba(247, 249, 252, 0.8);
+        border-bottom: 1px solid rgba(229, 231, 235, 0.7);
+      }
+
+      .nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 72px;
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 700;
+        font-size: 1.1rem;
+      }
+
+      .brand-mark {
+        width: 34px;
+        height: 34px;
+        display: grid;
+        place-items: center;
+        border-radius: 10px;
+        background: linear-gradient(135deg, var(--primary), #7c3aed);
+        color: white;
+        font-weight: 700;
+        box-shadow: var(--shadow);
+      }
+
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 28px;
+        color: var(--muted);
+        font-size: 0.96rem;
+      }
+
+      .nav-links a:hover {
+        color: var(--secondary);
+      }
+
+      .nav-cta {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px 20px;
+        border-radius: 12px;
+        background: var(--secondary);
+        color: white;
+        font-weight: 700;
+      }
+
+      .hero {
+        padding: 72px 0 42px;
+      }
+
+      .hero-grid {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        align-items: center;
+        gap: 48px;
+      }
+
+      .eyebrow {
+        display: inline-block;
+        padding: 8px 14px;
+        border-radius: 999px;
+        background: rgba(59, 130, 246, 0.09);
+        color: var(--primary-dark);
+        font-weight: 700;
+        font-size: 0.8rem;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        margin: 18px 0 16px;
+        font-size: clamp(2.5rem, 5vw, 4.2rem);
+        line-height: 1.05;
+        letter-spacing: -0.05em;
+      }
+
+      .hero p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 1.08rem;
+        line-height: 1.75;
+        max-width: 560px;
+      }
+
+      .hero-actions {
+        display: flex;
+        gap: 16px;
+        margin-top: 28px;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 16px 22px;
+        border-radius: 14px;
+        border: 1px solid transparent;
+        font-weight: 700;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .btn:hover {
+        transform: translateY(-1px);
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        color: white;
+        box-shadow: 0 18px 30px rgba(59, 130, 246, 0.22);
+      }
+
+      .btn-secondary {
+        background: white;
+        border-color: var(--border);
+        color: var(--secondary);
+      }
+
+      .mini-proof {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        flex-wrap: wrap;
+        margin-top: 26px;
+      }
+
+      .avatars {
+        display: flex;
+        align-items: center;
+        padding-left: 12px;
+      }
+
+      .avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: 3px solid white;
+        margin-left: -12px;
+        background: linear-gradient(135deg, #fbbf24, #f97316);
+        display: grid;
+        place-items: center;
+        font-size: 0.7rem;
+        color: white;
+        font-weight: 700;
+      }
+
+      .avatar:first-child { margin-left: 0; }
+
+      .avatar:nth-child(2) { background: linear-gradient(135deg, #34d399, #10b981); }
+      .avatar:nth-child(3) { background: linear-gradient(135deg, #60a5fa, #3b82f6); }
+
+      .proof-text {
+        color: var(--muted);
+        font-size: 0.96rem;
+      }
+
+      .hero-visual {
+        position: relative;
+      }
+
+      .dashboard {
+        background: rgba(255, 255, 255, 0.8);
+        border: 1px solid rgba(229, 231, 235, 0.8);
+        border-radius: 28px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+
+      .dashboard-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 18px 20px;
+        border-bottom: 1px solid var(--border);
+        background: rgba(248, 250, 252, 0.9);
+      }
+
+      .dots {
+        display: flex;
+        gap: 8px;
+      }
+
+      .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #e5e7eb;
+      }
+
+      .dot:first-child { background: #f87171; }
+      .dot:nth-child(2) { background: #fbbf24; }
+      .dot:nth-child(3) { background: #34d399; }
+
+      .dashboard-body {
+        padding: 24px;
+      }
+
+      .chart {
+        height: 170px;
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 14px;
+        padding: 20px 10px 10px;
+        border-radius: 18px;
+        background: linear-gradient(180deg, #eff6ff 0%, #ffffff 100%);
+      }
+
+      .bar {
+        flex: 1;
+        border-radius: 14px 14px 0 0;
+        background: linear-gradient(180deg, #93c5fd, #2563eb);
+        position: relative;
+      }
+
+      .bar:nth-child(1) { height: 38%; }
+      .bar:nth-child(2) { height: 58%; }
+      .bar:nth-child(3) { height: 72%; }
+      .bar:nth-child(4) { height: 62%; }
+      .bar:nth-child(5) { height: 92%; }
+      .bar:nth-child(6) { height: 76%; }
+      .bar:nth-child(7) { height: 100%; }
+
+      .metric-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-top: 18px;
+      }
+
+      .metric-card {
+        background: #f8fafc;
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 16px;
+      }
+
+      .metric-label {
+        color: var(--muted);
+        font-size: 0.82rem;
+        margin-bottom: 8px;
+      }
+
+      .metric-value {
+        font-size: 1.8rem;
+        font-weight: 800;
+        letter-spacing: -0.04em;
+      }
+
+      .metric-trend {
+        margin-top: 8px;
+        color: var(--success);
+        font-weight: 700;
+        font-size: 0.84rem;
+      }
+
+      section {
+        padding: 64px 0;
+      }
+
+      .section-head {
+        max-width: 640px;
+        margin: 0 auto 28px;
+        text-align: center;
+      }
+
+      .section-head h2 {
+        margin: 0 0 10px;
+        font-size: clamp(2rem, 3vw, 2.8rem);
+        letter-spacing: -0.05em;
+      }
+
+      .section-head p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 22px;
+      }
+
+      .feature-card {
+        background: rgba(255, 255, 255, 0.8);
+        border: 1px solid var(--border);
+        border-radius: 22px;
+        padding: 26px 22px;
+        box-shadow: 0 10px 25px rgba(15, 23, 42, 0.03);
+      }
+
+      .icon-wrap {
+        width: 52px;
+        height: 52px;
+        border-radius: 14px;
+        display: grid;
+        place-items: center;
+        margin-bottom: 20px;
+        font-size: 1.4rem;
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.12), rgba(124, 58, 237, 0.09));
+      }
+
+      .feature-card h3 {
+        margin: 0 0 12px;
+        font-size: 1.3rem;
+      }
+
+      .feature-card p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      .steps {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 22px;
+        margin-top: 32px;
+      }
+
+      .step {
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 26px 20px;
+      }
+
+      .step-number {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: rgba(59, 130, 246, 0.12);
+        color: var(--primary-dark);
+        font-weight: 800;
+        margin-bottom: 18px;
+      }
+
+      .step h3 {
+        margin: 0 0 10px;
+        font-size: 1.2rem;
+      }
+
+      .step p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      .cta-box {
+        background: linear-gradient(135deg, #0f172a, #1d4ed8);
+        border-radius: 28px;
+        padding: 42px 34px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        color: white;
+        box-shadow: 0 32px 60px rgba(37, 99, 235, 0.22);
+      }
+
+      .cta-box h2 {
+        margin: 0 0 8px;
+        font-size: clamp(1.9rem, 2.3vw, 2.7rem);
+        letter-spacing: -0.04em;
+      }
+
+      .cta-box p {
+        margin: 0;
+        color: rgba(255, 255, 255, 0.8);
+      }
+
+      footer {
+        padding: 26px 0 48px;
+        color: var(--muted);
+      }
+
+      .footer-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 18px;
+        border-top: 1px solid var(--border);
+        padding-top: 24px;
+      }
+
+      @media (max-width: 900px) {
+        .hero-grid,
+        .feature-grid,
+        .steps,
+        .cta-box {
+          grid-template-columns: 1fr;
+          display: grid;
+        }
+
+        .nav {
+          flex-wrap: wrap;
+          justify-content: center;
+          gap: 14px;
+          padding: 16px 0;
+        }
+
+        .nav-links {
+          width: 100%;
+          justify-content: center;
+          flex-wrap: wrap;
+          gap: 14px 22px;
+        }
+
+        .cta-box {
+          justify-content: center;
+          text-align: center;
+        }
+      }
+
+      @media (max-width: 560px) {
+        .hero {
+          padding-top: 52px;
+        }
+
+        .feature-grid,
+        .steps,
+        .metric-row {
+          grid-template-columns: 1fr;
+        }
+
+        .hero-actions {
+          flex-direction: column;
+        }
+
+        .btn {
+          width: 100%;
+        }
+
+        .footer-row {
+          flex-direction: column;
+          text-align: center;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="container nav">
+        <a href="#" class="brand" aria-label="ProjectFlow home">
+          <span class="brand-mark">P</span>
+          <span>ProjectFlow</span>
+        </a>
+
+        <nav class="nav-links" aria-label="Main navigation">
+          <a href="#features">Features</a>
+          <a href="#workflow">Workflow</a>
+          <a href="#pricing">Pricing</a>
+          <a href="#contact">Contact</a>
+        </nav>
+
+        <a href="#contact" class="nav-cta">Get Started</a>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="container hero-grid">
+          <div>
+            <span class="eyebrow">Built for fast-moving teams</span>
+            <h1>Ship work faster with less confusion.</h1>
+            <p>
+              ProjectFlow brings planning, progress tracking, and collaboration into one simple dashboard,
+              helping your team move from idea to launch without the chaos.
+            </p>
+
+            <div class="hero-actions">
+              <a href="#contact" class="btn btn-primary">Start free trial</a>
+              <a href="#features" class="btn btn-secondary">See how it works</a>
+            </div>
+
+            <div class="mini-proof">
+              <div class="avatars" aria-label="Customer avatars">
+                <span class="avatar">A</span>
+                <span class="avatar">J</span>
+                <span class="avatar">M</span>
+              </div>
+              <div class="proof-text">Trusted by 2,000+ product teams</div>
+            </div>
+          </div>
+
+          <div class="hero-visual" aria-label="Product dashboard preview">
+            <div class="dashboard">
+              <div class="dashboard-top">
+                <div class="dots">
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                </div>
+                <strong>Q3 Overview</strong>
+              </div>
+
+              <div class="dashboard-body">
+                <div class="chart" aria-label="Bar chart for weekly performance">
+                  <span class="bar"></span>
+                  <span class="bar"></span>
+                  <span class="bar"></span>
+                  <span class="bar"></span>
+                  <span class="bar"></span>
+                  <span class="bar"></span>
+                  <span class="bar"></span>
+                </div>
+
+                <div class="metric-row">
+                  <div class="metric-card">
+                    <div class="metric-label">Tasks complete</div>
+                    <div class="metric-value">86%</div>
+                    <div class="metric-trend">+12.4% this month</div>
+                  </div>
+
+                  <div class="metric-card">
+                    <div class="metric-label">Team velocity</div>
+                    <div class="metric-value">4.8x</div>
+                    <div class="metric-trend">+18% from last sprint</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="features">
+        <div class="container">
+          <div class="section-head">
+            <h2>Everything your team needs to stay aligned</h2>
+            <p>
+              Built for real-world work so your group can turn goals into progress without unnecessary meetings
+              or disconnected tools.
+            </p>
+          </div>
+
+          <div class="feature-grid">
+            <article class="feature-card">
+              <div class="icon-wrap">✓</div>
+              <h3>Smart task tracking</h3>
+              <p>Organize priorities, assign owners, and see progress in real time from one shared workspace.</p>
+            </article>
+
+            <article class="feature-card">
+              <div class="icon-wrap">⚡</div>
+              <h3>Faster execution</h3>
+              <p>Reduce decision bottlenecks with clear responsibilities, approvals, and milestone updates.</p>
+            </article>
+
+            <article class="feature-card">
+              <div class="icon-wrap">📈</div>
+              <h3>Clear visibility</h3>
+              <p>Monitor team health, risks, and deadlines with dashboards designed for quick team check-ins.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="workflow">
+        <div class="container">
+          <div class="section-head">
+            <h2>How it works</h2>
+            <p>From kickoff to launch, ProjectFlow keeps everyone focused on what matters next.</p>
+          </div>
+
+          <div class="steps">
+            <div class="step">
+              <div class="step-number">1</div>
+              <h3>Create your workspace</h3>
+              <p>Set up projects, define goals, and invite teammates in minutes.</p>
+            </div>
+
+            <div class="step">
+              <div class="step-number">2</div>
+              <h3>Track progress</h3>
+              <p>Break work into tasks, review status updates, and identify blockers quickly.</p>
+            </div>
+
+            <div class="step">
+              <div class="step-number">3</div>
+              <h3>Deliver results</h3>
+              <p>Keep stakeholders informed with summary views and clear next steps for every sprint.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="pricing">
+        <div class="container">
+          <div class="cta-box" id="contact">
+            <div>
+              <h2>Ready to simplify your workflow?</h2>
+              <p>Launch your first project in under 10 minutes and see the difference.</p>
+            </div>
+            <a href="mailto:hello@projectflow.example" class="btn btn-primary">Book a demo</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container footer-row">
+        <div>© 2026 ProjectFlow</div>
+        <div>Built for teams that want to move faster.</div>
+      </div>
+    </footer>
+  </body>
+</html>
